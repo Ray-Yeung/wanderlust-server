@@ -5,24 +5,5 @@
 ## Getting started
 - [ ] User Auth
 - [ ] User Auth Testing
-### Setting up a project
 
-
-
-### Working on the project
-
-
-
-## Databases
-
-
-
-## Deployment
-
-
-### Setting up the project on Heroku
-
-
-
-### Deploying to Heroku
 
