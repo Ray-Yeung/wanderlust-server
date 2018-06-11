@@ -3,7 +3,7 @@
 
 
 ## Getting started
-- [x] User Auth
+- [ ] User Auth
 - [ ] User Auth Testing
 ### Setting up a project
 
