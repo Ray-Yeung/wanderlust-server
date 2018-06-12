@@ -17,6 +17,5 @@ const jwtStrategy = new JwtStrategy(options, (payload, done) => {
   done(null, payload.user);
 });
 
-
-passport.use(jwtStrategy);
+// passport.use(jwtStrategy);
 module.exports = jwtStrategy;

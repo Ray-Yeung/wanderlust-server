@@ -1,6 +1,6 @@
 'use strict';
 
-const User = require('../models/users');
+const User = require('../models/user');
 const { Strategy: LocalStrategy } = require('passport-local');
 
 //Setting up local login strategy

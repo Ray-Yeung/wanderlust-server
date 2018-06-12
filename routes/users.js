@@ -1,7 +1,7 @@
 'use strict';
 const express = require('express');
 
-const User = require('../models/users');
+const User = require('../models/user');
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/users', (req, res, next) => {
   console.log(req.body);
 
-  const requiredFields = ['username', 'password'];
+  const requiredFields = ['username', 'password', 'firstname', 'lastname'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
