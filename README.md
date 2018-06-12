@@ -7,5 +7,4 @@
 - [ ] User Auth Testing
 
 ## npm install packages required
-* mongoose
-* 
+* to fill in
