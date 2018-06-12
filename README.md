@@ -3,8 +3,8 @@
 
 
 ## Getting started
-- [ ] User Auth
-- [ ] User Auth Testing
+- [x] User Auth
+- [x] User Auth Testing
 
 ## npm install packages required
 * to fill in
