@@ -7,16 +7,25 @@ const router = express.Router();
 
 //POST endpoint for Usernodemon
 router.post('/users', (req, res, next) => {
-  console.log(req.body);
 
-  const requiredFields = ['username', 'password', 'firstname', 'lastname'];
+  const requiredFields = ['username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
-    const err = new Error(`Missing '${missingField}' in request body`);
-    err.status = 422;
-    return next(err);
+    return res.status(422).json({
+      code: 422,
+      reason: 'ValidationError',
+      message: 'Missing field',
+      location: missingField
+    });
   }
+
+  // if (missingField) {
+  //   const err = new Error('error message');
+  //   err.status = 422;
+  //   // err.message(`Missing '${missingField}' in request body`);
+  //   return next(err);
+  // }
 
   const stringFields = ['username', 'password', 'firstname', 'lastname'];
   const nonStringField = stringFields.find(
@@ -24,10 +33,19 @@ router.post('/users', (req, res, next) => {
   );
 
   if (nonStringField) {
-    const err = new Error(`Field: '${nonStringField}' must be type String`);
-    err.status = 422;
-    return next(err);
+    return res.status(422).json({
+      code: 422,
+      reason: 'ValidationError',
+      message: 'Incorrect input: expected string',
+      location: nonStringField
+    });
   }
+
+  // if (nonStringField) {
+  //   const err = new Error(`Field: '${nonStringField}' must be type String`);
+  //   err.status = 422;
+  //   return next(err);
+  // }
 
   const explicityTrimmedFields = ['username', 'password'];
   const nonTrimmedField = explicityTrimmedFields.find(
@@ -35,10 +53,19 @@ router.post('/users', (req, res, next) => {
   );
 
   if (nonTrimmedField) {
-    const err = new Error(`Field: '${nonTrimmedField}' cannot start or end with whitespace`);
-    err.status = 422;
-    return next(err);
+    return res.status(422).json({
+      code: 422,
+      reason: 'ValidationError',
+      message: 'Cannot start or end with whitespace',
+      location: nonTrimmedField
+    });
   }
+
+  // if (nonTrimmedField) {
+  //   const err = new Error(`Field: '${nonTrimmedField}' cannot start or end with whitespace`);
+  //   err.status = 422;
+  //   return next(err);
+  // }
 
   // bcrypt truncates after 72 characters, so let's not give the illusion
   // of security by storing extra **unused** info
