@@ -1,0 +1,15 @@
+[
+  {
+    "_id": "333333333333333333333300",
+    "name": "Wood Tavern",
+    "location": 
+    {"lat": "37.8506259", "lng": "-122.2526224"},
+    "photos": [],
+    "types": ["bar", "restaurant", "food"],
+    "rating": 4.5,
+    "phone_number": "(510) 654-6607",
+    "website": "http://www.woodtavern.net/",
+    "place_id": "ChIJd-5k--h9hYARvAzf0IPfwW0",
+    "userId": "5b2415804ca1ce0014b36321"
+  }
+]
