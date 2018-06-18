@@ -16,6 +16,7 @@ const jwtStrategy = require('./auth/jwt');
 //require auth routers
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
+const placesRouter = require('./routes/places');
 
 //set app as express()
 const app = express();
@@ -39,6 +40,7 @@ app.use(
 
 app.use('/api', userRouter);
 app.use('/api', authRouter);
+app.use('/api', placesRouter);
 
 function runServer(port = PORT) {
   const server = app
