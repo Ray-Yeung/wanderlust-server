@@ -15,6 +15,8 @@ router.use('/places', passport.authenticate('jwt', {session: false, failWithErro
 router.get('/places', (req, res, next) => {
   const userId = req.user.id;
   console.log(userId);
+  //will implement 
+  //if(trip_id) {filter.trip_id = tripId
 
   Place.find({ userId })
     .sort('name')
@@ -26,5 +28,29 @@ router.get('/places', (req, res, next) => {
       next(err);
     });
 });
+
+//POST a place
+router.post('/places', (req, res, next) => {
+  const { name, location = {}, photos = [], place_id, types = [], price_level, rating, phone_number, website } = req.body;
+  console.log(req.body);
+
+  const userId = req.user.id;
+
+  const newPlace = { name, location, photos, place_id, types, price_level, rating, phone_number, website, userId};
+  //validate input
+
+  //create new place
+  Place.create(newPlace)
+    .then(result => {
+      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+    })
+    .catch(err => {
+      if (err.code === 11000) {
+        err = new Error('The folder name already exists');
+        err.status = 400;
+      }
+      next(err);
+    });
+})
 
 module.exports = router;
