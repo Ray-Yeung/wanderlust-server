@@ -21,7 +21,7 @@ router.get('/places', (req, res, next) => {
   Place.find({ userId })
     .sort('name')
     .then(results => {
-      // console.log(results);
+      console.log(results);
       res.json(results);
     })
     .catch( err => {
@@ -31,13 +31,19 @@ router.get('/places', (req, res, next) => {
 
 //POST a place
 router.post('/places', (req, res, next) => {
-  const { name, location = {}, photos = [], place_id, types = [], price_level, rating, phone_number, website } = req.body;
+  const { name, location = {}, photos = [], place_id, types = [], price_level, rating, phone_number, website, address } = req.body;
   console.log(req.body);
 
   const userId = req.user.id;
+  console.log(userId);
 
-  const newPlace = { name, location, photos, place_id, types, price_level, rating, phone_number, website, userId};
+  const newPlace = { name, location, photos, place_id, types, price_level, rating, phone_number, website, userId, address };
   //validate input
+  if (!userId) {
+    const err = new Error('Missing `userId` in request body');
+    err.status = 400;
+    return next(err);
+  }
 
   //create new place
   Place.create(newPlace)
@@ -46,11 +52,11 @@ router.post('/places', (req, res, next) => {
     })
     .catch(err => {
       if (err.code === 11000) {
-        err = new Error('The folder name already exists');
+        err = new Error('The place name already exists');
         err.status = 400;
       }
       next(err);
     });
-})
+});
 
 module.exports = router;

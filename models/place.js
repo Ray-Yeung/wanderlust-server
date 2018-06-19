@@ -13,6 +13,8 @@ const placeSchema = mongoose.Schema({
     lat: String,
     lng: String
   },
+  address: 
+    {type: String},
   photos: [],
   place_id:
     {type: String},
@@ -22,14 +24,13 @@ const placeSchema = mongoose.Schema({
   phone_number: {type: String},
   website: {type: String},
   userId: 
-    {type: String,
-      required: true},
+  { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   trip_id: 
     {type: String}
 });
 
 //more efficient mongoose search
-placeSchema.index({ place_id: 1}, {unique: true});
+placeSchema.index({ place_id: 1, userId: 1 }, {unique: true});
 
 //return _id as id
 placeSchema.set('toObject', {
