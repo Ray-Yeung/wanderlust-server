@@ -25,8 +25,8 @@ const placeSchema = mongoose.Schema({
   website: {type: String},
   userId: 
   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  trip_id: 
-    {type: String}
+  tripId: 
+  { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }
 });
 
 //more efficient mongoose search
