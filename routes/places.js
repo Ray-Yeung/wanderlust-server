@@ -13,12 +13,17 @@ router.use('/places', passport.authenticate('jwt', {session: false, failWithErro
 
 //GET all places
 router.get('/places', (req, res, next) => {
+  const { tripId } = req.query;
   const userId = req.user.id;
   console.log(userId);
-  //will implement 
-  //if(trip_id) {filter.trip_id = tripId
 
-  Place.find({ userId })
+  let filter = { userId };
+  //will implement 
+  if(tripId) {
+    filter.tripId = tripId;
+  }
+
+  Place.find( filter )
     .sort('name')
     .then(results => {
       console.log(results);
