@@ -3,8 +3,6 @@
 const mongoose = require('mongoose');
 
 //schema to represent a place
-//need to add these: address: 
-// {type: String},
 const placeSchema = mongoose.Schema({
   name: 
     {type: String, 
@@ -18,6 +16,7 @@ const placeSchema = mongoose.Schema({
   photos: [],
   place_id:
     {type: String},
+  comments: [String],
   types: [String],
   price_level: {type: Number},
   rating: {type: Number, min: 0, max: 5},
@@ -30,7 +29,7 @@ const placeSchema = mongoose.Schema({
 });
 
 //more efficient mongoose search
-placeSchema.index({ place_id: 1, userId: 1 }, {unique: true});
+// placeSchema.index({ place_id: 1, userId: 1 }, {unique: true});
 
 //return _id as id
 placeSchema.set('toObject', {

@@ -1,31 +1,152 @@
 'use strict';
 
+const express = require('express');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
-const tripSchema = new mongoose.Schema({
-  name: 
-    {type: String, 
-      required: true},
-  location: {
-    lat: String,
-    lng: String
-  },
-  address: 
-    {type: String},
-  photos: [],
-  place_id:
-    {type: String},
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+const Trip = require('../models/trip');
+const Place = require('../models/place');
+
+const router = express.Router();
+
+// Protect endpoints using JWT Strategy
+router.use('/trips', passport.authenticate('jwt', { session: false, failWithError: true }));
+
+/* ========== GET/READ ALL TRIPS ========== */
+router.get('/trips', (req, res, next) => {
+  const userId = req.user.id;
+  console.log(userId);
+
+  Trip.find({ userId })
+    .sort('name')
+    .then(results => {
+      res.json(results);
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
-tripSchema.index({ name: 1, userId: 1 }, { unique: true });
+/* ========== GET/READ A SINGLE TRIP ========== */
+router.get('/trips/:id', (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
 
-tripSchema.set('toObject', {
-  transform: function (doc, ret) {
-    ret.id = ret._id;
-    delete ret._id;
-    delete ret.__v;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
   }
+
+  Trip.findOne({ _id: id, userId })
+    .then(result => {
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
-module.exports = mongoose.model('Trip', tripSchema);
+/* ========== POST/CREATE AN ITEM ========== */
+router.post('/trips', (req, res, next) => {
+  const { name, location = {}, photos = [], place_id, address, comment = [] } = req.body;
+  const userId = req.user.id;
+
+  const newTrip = { name, location, photos, place_id, address, comment, userId };
+
+  //validate input
+  if (!userId) {
+    const err = new Error('Missing `userId` in request body');
+    err.status = 400;
+    return next(err);
+  }
+
+  if (!name) {
+    const err = new Error('Missing `name` in request body');
+    err.status = 400;
+    return next(err);
+  }
+
+  Trip.create(newTrip)
+    .then(result => {
+      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+    })
+    .catch(err => {
+      if (err.code === 11000) {
+        err = new Error('The trip name already exists');
+        err.status = 400;
+      }
+      next(err);
+    });
+});
+
+//need to test
+/* ========== PUT/UPDATE A SINGLE ITEM ========== */
+//have to figure out what will be updatable
+router.put('/trips/:id', (req, res, next) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  const userId = req.user.id;
+
+  /***** Never trust users - validate input *****/
+  if (!name) {
+    const err = new Error('Missing `name` in request body');
+    err.status = 400;
+    return next(err);
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
+  }
+
+  const updateTrip = { name, userId };
+
+  Trip.findByIdAndUpdate(id, updateTrip, { new: true })
+    .then(result => {
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      if (err.code === 11000) {
+        err = new Error('The trip name already exists');
+        err.status = 400;
+      }
+      next(err);
+    });
+});
+
+/* ========== DELETE/REMOVE A SINGLE ITEM ========== */
+router.delete('/trips/:id', (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  console.log(userId, id);
+
+  Trip.findOneAndRemove({ _id: id, userId })
+    .then(results => {
+      if (!results) {
+        next();
+      }
+      //Do we want to clear out trip id from saved places as below or to actually delete them...maybe give option on front end?
+      return Place.updateMany(
+        { tripId: id, userId },
+        { $unset: { tripId: '' } }
+      );
+    })
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+module.exports = router;

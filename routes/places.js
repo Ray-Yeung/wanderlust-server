@@ -31,8 +31,8 @@ router.get('/places', (req, res, next) => {
 
 //POST a place
 router.post('/places', (req, res, next) => {
-  const { name, location = {}, photos = [], place_id, types = [], price_level, rating, phone_number, website, address } = req.body;
-  console.log(req.body);
+  const { name, location = {}, photos = [], place_id, types = [], price_level, rating, phone_number, website, address, tripId } = req.body;
+  console.log(tripId);
 
   const userId = req.user.id;
   console.log(userId);
@@ -45,6 +45,16 @@ router.post('/places', (req, res, next) => {
     return next(err);
   }
 
+  if (tripId) {
+    if (mongoose.Types.ObjectId.isValid(tripId)) {
+      newPlace.tripId = tripId;
+    } else {
+      const err = new Error('The `tripId` is not valid');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
   //create new place
   Place.create(newPlace)
     .then(result => {
@@ -52,11 +62,31 @@ router.post('/places', (req, res, next) => {
     })
     .catch(err => {
       if (err.code === 11000) {
+        console.log(err.code);
         err = new Error('The place name already exists');
         err.status = 400;
       }
       next(err);
     });
 });
+
+/* ========== DELETE/REMOVE A SINGLE ITEM ========== */
+router.delete('/places/:id', (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  console.log(id, userId);
+
+  Place.findOneAndRemove({ _id: id, userId })
+    .then(result => {
+      if (!result) {
+        next();
+      }
+      res.status(204).end();
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 
 module.exports = router;

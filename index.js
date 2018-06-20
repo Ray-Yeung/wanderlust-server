@@ -17,6 +17,7 @@ const jwtStrategy = require('./auth/jwt');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const placesRouter = require('./routes/places');
+const tripsRouter = require('./routes/trips');
 
 //set app as express()
 const app = express();
@@ -41,6 +42,7 @@ app.use(
 app.use('/api', userRouter);
 app.use('/api', authRouter);
 app.use('/api', placesRouter);
+app.use('/api', tripsRouter);
 
 // Catch-all 404
 app.use(function (req, res, next) {
