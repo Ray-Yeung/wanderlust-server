@@ -89,11 +89,11 @@ router.post('/trips', (req, res, next) => {
 //have to figure out what will be updatable
 router.put('/trips/:id', (req, res, next) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { comment } = req.body;
   const userId = req.user.id;
 
   /***** Never trust users - validate input *****/
-  if (!name) {
+  if (!comment) {
     const err = new Error('Missing `name` in request body');
     err.status = 400;
     return next(err);
@@ -105,7 +105,7 @@ router.put('/trips/:id', (req, res, next) => {
     return next(err);
   }
 
-  const updateTrip = { name, userId };
+  const updateTrip = { comment, userId };
 
   Trip.findByIdAndUpdate(id, updateTrip, { new: true })
     .then(result => {
@@ -132,15 +132,19 @@ router.delete('/trips/:id', (req, res, next) => {
 
   Trip.findOneAndRemove({ _id: id, userId })
     .then(results => {
+      console.log(results);
       if (!results) {
         next();
       }
       //Do we want to clear out trip id from saved places as below or to actually delete them...maybe give option on front end?
-      return Place.updateMany(
-        { tripId: id, userId },
-        { $unset: { tripId: '' } }
+      return Place.deleteMany(
+        { tripId: id, userId }
+        // { $unset: { tripId: '' } }
       );
     })
+    // .then((results) => {
+    //   console.log('results', results);
+    //   res.status(204).json({id}).end();
     .then(() => {
       res.status(204).end();
     })

@@ -1,12 +1,12 @@
 [
   {
-    "_id": "333333333333333333333301",
-    "name": "Davis",
+    "name": "London",
     "location": 
-    {"lat": "38.5449065", "lng": "-121.7405167"},
-    "address": "Davis, CA, USA",
+    {"lat": "51.5073509", "lng": "-0.1277583"},
+    "address": "London, UK",
     "photos": [],
-    "place_id": "ChIJP1SVlJkphYAR_4_ibhs_AcM",
+    "comment": ["London in Spring 2019 baby!", "Don't forget to get a phone"],
+    "place_id": "ChIJdd4hrwug2EcRmSrV3Vo6llI",
     "userId": {
       "$oid": "5b2415804ca1ce0014b36321"
   }
