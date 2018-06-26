@@ -18,6 +18,7 @@ const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const placesRouter = require('./routes/places');
 const tripsRouter = require('./routes/trips');
+const commentsRouter = require('./routes/comments');
 
 //set app as express()
 const app = express();
@@ -43,6 +44,7 @@ app.use('/api', userRouter);
 app.use('/api', authRouter);
 app.use('/api', placesRouter);
 app.use('/api', tripsRouter);
+app.use('/api', commentsRouter);
 
 // Catch-all 404
 app.use(function (req, res, next) {

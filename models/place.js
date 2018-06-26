@@ -16,7 +16,7 @@ const placeSchema = mongoose.Schema({
   photos: [],
   place_id:
     {type: String},
-  comments: [String],
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   types: [String],
   price_level: {type: Number},
   rating: {type: Number, min: 0, max: 5},
@@ -28,8 +28,8 @@ const placeSchema = mongoose.Schema({
   { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }
 });
 
-//more efficient mongoose search
-// placeSchema.index({ place_id: 1, userId: 1 }, {unique: true});
+// more efficient mongoose search
+placeSchema.index({ place_id: 1, userId: 1 }, {unique: true});
 
 //return _id as id
 placeSchema.set('toObject', {
