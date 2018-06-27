@@ -3,6 +3,7 @@ const express = require('express');
 
 const mongoose = require('mongoose');
 const Place = require('../models/place');
+const Comment = require('../models/comment');
 const router = express.Router();
 const passport = require('passport');
 
@@ -13,7 +14,7 @@ router.use('/places', passport.authenticate('jwt', {session: false, failWithErro
 
 //GET all places
 router.get('/places', (req, res, next) => {
-  const { tripId } = req.query;
+  const { tripId, commentId } = req.query;
   const userId = req.user.id;
   console.log(userId);
 
@@ -23,7 +24,12 @@ router.get('/places', (req, res, next) => {
     filter.tripId = tripId;
   }
 
+  if(commentId) {
+    filter.commentId = commentId;
+  }
+
   Place.find( filter )
+    .populate('comments')
     .sort('name')
     .then(results => {
       console.log(results);

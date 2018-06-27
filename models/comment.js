@@ -3,13 +3,16 @@
 const mongoose = require('mongoose');
 
 //schema to represent a place
-const commentSchema = mongoose.Schema({
+const commentSchema = new mongoose.Schema({
   comment: 
     {type: String},
-  userId: 
-  { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  placeId: 
-  { type: mongoose.Schema.Types.ObjectId, ref: 'Place' }
+  created: { type: Date, default: Date.now },
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' },
+  placeId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Place' }
 });
 
 //return _id as id
