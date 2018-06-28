@@ -16,10 +16,10 @@ router.get('/comments', (req, res, next) => {
   console.log(req);
   const userId = req.user.id;
   console.log(userId);
-  const placeId = req.place.id;
+  
 
-  Comment.find({ userId, placeId })
-    .sort('created', -1)
+  Comment.find({ userId })
+    .sort('-created')
     .then(results => {
       res.json(results);
     })

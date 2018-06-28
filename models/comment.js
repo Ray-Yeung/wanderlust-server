@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 //schema to represent a place
 const commentSchema = new mongoose.Schema({
+  // _id = new ObjectId(),
   comment: 
     {type: String},
   created: { type: Date, default: Date.now },
@@ -24,4 +25,5 @@ commentSchema.set('toObject', {
   }
 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+module.exports = commentSchema;
+// module.exports = mongoose.model('Comment', commentSchema);

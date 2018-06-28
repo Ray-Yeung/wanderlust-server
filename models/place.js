@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-
+const commentSchema = require('./comment');
 //schema to represent a place
 const placeSchema = mongoose.Schema({
   name: 
@@ -16,7 +16,9 @@ const placeSchema = mongoose.Schema({
   photos: [],
   place_id:
     {type: String},
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+  comments: [commentSchema],
+  // comments: [],
+  // comments: [],
   types: [String],
   price_level: {type: Number},
   rating: {type: Number, min: 0, max: 5},

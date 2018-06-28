@@ -14,7 +14,7 @@ router.use('/places', passport.authenticate('jwt', {session: false, failWithErro
 
 //GET all places
 router.get('/places', (req, res, next) => {
-  const { tripId, commentId } = req.query;
+  const { tripId } = req.query;
   const userId = req.user.id;
   console.log(userId);
 
@@ -24,9 +24,9 @@ router.get('/places', (req, res, next) => {
     filter.tripId = tripId;
   }
 
-  if(commentId) {
-    filter.commentId = commentId;
-  }
+  // if(commentId) {
+  //   filter.commentId = commentId;
+  // }
 
   Place.find( filter )
     .populate('comments')
@@ -81,7 +81,86 @@ router.post('/places', (req, res, next) => {
     });
 });
 
-/* ========== DELETE/REMOVE A SINGLE ITEM ========== */
+/* ========== PUT/UPDATE A SINGLE ITEM ========== */
+// router.put('/places/:id', (req, res, next) => {
+//   const { id } = req.params;
+//   console.log(id);
+//   const { comment } = req.body;
+//   console.log(comment);
+//   const userId = req.user.id;
+
+//   //validate input
+//   if (!userId) {
+//     const err = new Error('Missing `userId` in request body');
+//     err.status = 400;
+//     return next(err);
+//   }
+
+//   if (!mongoose.Types.ObjectId.isValid(id)) {
+//     const err = new Error('The `id` is not valid');
+//     err.status = 400;
+//     return next(err);
+//   }
+
+//   // const updateComment = { comment, userId };
+
+//   return Place.findOneAndUpdate( {_id: id}, {$push: {comments: comment}}, {new: true})
+//     .then(response => {
+//       console.log(response)
+//       if (response) {
+//         console.log(res.json(response));
+//       } else {
+//         next();
+//       }
+//     })
+//     .catch(err => {
+//       next(err);
+//     });
+// });
+
+router.put('/places/:id/comment', (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  const {comment, placeId} = req.body;
+  const commentProps = {comment, placeId};
+  console.log(commentProps);
+  const userId = req.user.id;
+  console.log(userId);
+
+  //validate input
+  if (!userId) {
+    const err = new Error('Missing `userId` in request body');
+    err.status = 400;
+    return next(err);
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
+  }
+
+  // const updateComment = { comment, userId };
+
+  return Place.findOneAndUpdate( {_id: id}, {
+    $push: {
+      comments: { 'comment': comment }
+    }
+  })
+    .then(response => {
+      // console.log(response);
+      if (response) {
+        (res.json(response));
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+/* ========== DELETE/REMOVE A SINGLE PLACE ========== */
 router.delete('/places/:id', (req, res, next) => {
   const { id } = req.params;
   const userId = req.user.id;
@@ -93,6 +172,32 @@ router.delete('/places/:id', (req, res, next) => {
         next();
       }
       res.status(204).end();
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+//Deleting comment (ie updating comment array) throwing 'Cannot set headers after they are sent to the client' error
+/* ========== DELETE/REMOVE A SINGLE COMMENT ========== */
+router.delete('/places/comment/:id', (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  console.log(id, userId);
+
+  Place.findOneAndUpdate({ _id: id }, {
+    $pull: {
+      comments: {'id': id}
+    }
+  })
+    .then(result => {
+      console.log(result);
+      if (!result) {
+        next();
+      }
+      res.json({
+        message: 'delete successful'
+      });
     })
     .catch(err => {
       next(err);
