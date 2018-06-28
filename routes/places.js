@@ -144,7 +144,7 @@ router.put('/places/:id/comment', (req, res, next) => {
 
   return Place.findOneAndUpdate( {_id: id}, {
     $push: {
-      comments: { 'comment': comment }
+      comments: { 'comment': comment, 'placeId': id }
     }
   })
     .then(response => {

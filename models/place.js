@@ -31,7 +31,7 @@ const placeSchema = mongoose.Schema({
 });
 
 // more efficient mongoose search
-placeSchema.index({ place_id: 1, userId: 1 }, {unique: true});
+// placeSchema.index({ place_id: 1, userId: 1 }, {unique: true});
 
 //return _id as id
 placeSchema.set('toObject', {
