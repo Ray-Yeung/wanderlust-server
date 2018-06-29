@@ -147,7 +147,7 @@ router.put('/places/:id/comment', (req, res, next) => {
       comments: { 'comment': comment, 'placeId': id }
     }
   }, {new: true})
-    .then(Place.findOne({_id: id}))
+    .then(Place.findOne({comments: {'comment': comment}}))
     .then(response => {
       console.log(response);
       if (response) {
@@ -181,24 +181,21 @@ router.delete('/places/:id', (req, res, next) => {
 
 //Deleting comment (ie updating comment array) throwing 'Cannot set headers after they are sent to the client' error
 /* ========== DELETE/REMOVE A SINGLE COMMENT ========== */
-router.delete('/places/comment/:id', (req, res, next) => {
-  const { id } = req.params;
+router.delete('/places/:placeId/comment/:id', (req, res, next) => {
+  const { placeId, id } = req.params;
+  console.log(req.params);
   const userId = req.user.id;
-  console.log(id, userId);
+  // const { placeId } = req.body;
+  console.log(id, userId, placeId);
 
-  Place.findOneAndUpdate({ _id: id }, {
+  Place.findOneAndUpdate({ _id: placeId }, {
     $pull: {
-      comments: {'id': id}
+      comments: {'_id': id}
     }
-  })
+  }, {new:true})
     .then(result => {
       console.log(result);
-      if (!result) {
-        next();
-      }
-      res.json({
-        message: 'delete successful'
-      });
+      res.status(204).json(result);
     })
     .catch(err => {
       next(err);
