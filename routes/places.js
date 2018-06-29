@@ -195,7 +195,7 @@ router.delete('/places/:placeId/comment/:id', (req, res, next) => {
   }, {new:true})
     .then(result => {
       console.log(result);
-      res.status(204).json(result);
+      res.json(result);
     })
     .catch(err => {
       next(err);
