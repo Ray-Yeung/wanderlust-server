@@ -1,13 +1,13 @@
 'use strict';
 
 const mongoose = require('mongoose');
-
+const moment = require('moment')
 //schema to represent a place
 const commentSchema = new mongoose.Schema({
   // _id = new ObjectId(),
   comment: 
     {type: String},
-  created: { type: Date, default: Date.now },
+  created: {type: String,  default: moment((Date.now())).format('hh:mmA MM/DD/YY')},
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User' },
