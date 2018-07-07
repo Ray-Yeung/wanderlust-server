@@ -15,7 +15,6 @@ router.use('/comments', passport.authenticate('jwt', { session: false, failWithE
 router.get('/comments', (req, res, next) => {
   console.log(req);
   const userId = req.user.id;
-  console.log(userId);
   
 
   Comment.find({ userId })
