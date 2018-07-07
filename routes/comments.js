@@ -45,7 +45,6 @@ router.post('/comments', (req, res, next) => {
     });
 });
 
-//PUT/UPDATE comment
 
 //DELETE comment
 
