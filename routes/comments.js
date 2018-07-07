@@ -45,7 +45,4 @@ router.post('/comments', (req, res, next) => {
     });
 });
 
-
-//DELETE comment
-
 module.exports = router;
